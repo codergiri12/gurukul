@@ -1,13 +1,12 @@
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const bodyParser = require("body-parser");
-const fileUpload = require("express-fileupload");
-const connectDatabase = require("./utils/database");
+const { connectDatabase } = require("./utils/database");
 
 const errorMiddleware = require("./middleware/error");
-
 
 // Handling Uncaught Exception
 process.on("uncaughtException", (err) => {
@@ -19,24 +18,26 @@ process.on("uncaughtException", (err) => {
 if (process.env.NODE_ENV !== "PRODUCTION") {
   require("dotenv").config({ path: "utils/config.env" });
 }
-
 connectDatabase();
+// module.exports = conn;
+// let gfs;
+
+
+
+
 
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(fileUpload());
-
+// app.use(fileUpload());
 
 // Route Imports
-// const product = require("./routes/productRoute");
+const auth = require("./routes/auth");
+const classroom = require("./routes/class");
 
-
-// app.use("/api/v1", product);
-
-
-
+app.use("/api/v1", auth);
+app.use("/api/v1/class", classroom);
 
 // Middleware for Errors
 app.use(errorMiddleware);

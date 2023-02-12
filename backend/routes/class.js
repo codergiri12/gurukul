@@ -1,6 +1,6 @@
 const router = require("express").Router();
 
-const { getAllSubmissions,createPost,submitAssignment,getAllFiles,createClass, joinClass,fileUpload, createAssignment, getFile, getAllPostsAndAssignments } = require("../controllers/class");
+const { getAllSubmissions,createPost,submitAssignment,getAllFiles,createClass, joinClass,fileUpload, createAssignment, getFile, getAllPostsAndAssignments, getClass } = require("../controllers/class");
 
 const { isAuthenticatedUser} = require("../middleware/auth");
 const { upload } = require("../utils/utils");
@@ -15,4 +15,5 @@ router.route("/submitAssignment/:assignmentid").post(upload.array("files"), subm
 router.route("/createPost/:classid").post(upload.array("files"),createPost);
 router.route("/get_posts_assignments/:classid").get(getAllPostsAndAssignments);
 router.route("/submissions/:assignmentid").get(getAllSubmissions);
+router.route("/:classid").get(getClass)
 module.exports = router;

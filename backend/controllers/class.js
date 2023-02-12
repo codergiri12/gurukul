@@ -8,6 +8,17 @@ const mongoose = require("mongoose");
 
 const ObjectId = require("mongoose").Types.ObjectId;
 
+exports.getClass = catchAsyncErrors(async (req, res, next) => {
+  const {classid} =  req.params;
+  const _class = await Class.findById(classid);
+  if(!_class) {
+    return next(new ErrorHander("Class not found",400));
+  }
+  res.status(200).json({
+    success: true,
+    class : _class
+  })
+})
 
 exports.createClass = catchAsyncErrors(async (req, res, next) => {
   const { user_id, className } = req.body;
@@ -235,6 +246,7 @@ exports.createPost = catchAsyncErrors(async(req,res,next)=>{
     files
   });
 
+
   _class.posts.push(post);
   await _class.save();
 
@@ -247,7 +259,7 @@ exports.createPost = catchAsyncErrors(async(req,res,next)=>{
 
 exports.getAllPostsAndAssignments = catchAsyncErrors(async(req,res,next)=>{
   const {classid} = req.params;
-  const _class = await Class.findById(classid).populate('posts').populate({
+  const _class = await Class.findById(classid).populate({path:'posts',populate:{path:"postedBy"}}).populate({
     path:"assignments",
     populate:{
       path:"submissions"
@@ -302,3 +314,4 @@ exports.getAllSubmissions = catchAsyncErrors(async(req,res,next)=>{
     submitted
   })
 })
+

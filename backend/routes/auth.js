@@ -4,7 +4,7 @@ const { registerUser,
   loginUser,
   logout,
   forgotPassword,
-  resetPassword} = require("../controllers/auth");
+  resetPassword,getUserDetails} = require("../controllers/auth");
 
 const { isAuthenticatedUser} = require("../middleware/auth");
 
@@ -16,6 +16,7 @@ router.route("/password/forgot").post(forgotPassword);
 
 router.route("/password/reset/:token").put(resetPassword);
 
+router.route("/me").post(isAuthenticatedUser, getUserDetails);
 
 router.route("/logout").get(logout);
 

@@ -138,3 +138,9 @@ exports.resetPassword = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, res);
 });
 
+exports.getUserDetails = catchAsyncErrors(async (req, res, next) => {
+  res.status(200).json({
+    success: true,
+    user:req.user,
+  });
+});

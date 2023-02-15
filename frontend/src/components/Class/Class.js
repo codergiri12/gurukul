@@ -7,6 +7,8 @@ import Loader from "../layout/Loader";
 import { Avatar, Button, TextField } from "@mui/material";
 import Announcement from "./Announcement";
 
+import "../../styles/Class/Class.css";
+
 const Class = ({ match }) => {
   const history = useHistory();
   const dispatch = useDispatch();
@@ -26,13 +28,6 @@ const Class = ({ match }) => {
 
   }, [user,dispatch]);
 
-
-  // useEffect (() => {
-  //   if(loading===false){
-  //     dispatch(getPostsAndAssignments(classData._id));
-  //   }
-  // },[classData])
-
   useEffect(() => {
     if (error) {
       if (error === "Resource not found. Invalid: _id") {
@@ -42,7 +37,7 @@ const Class = ({ match }) => {
       } else {
         alert.error(error);
         dispatch(clearErrors());
-        history.push("/");
+        history.push(`/class/${match.params.id}`)
       }
     }
   }, [dispatch, error, alert]);
@@ -62,19 +57,21 @@ const Class = ({ match }) => {
     const formData = new FormData();
     formData.append("description",inputValue);
     formData.append("postedBy" , user._id);
-    for (let i = 0; i < image.length; i++) {
-      formData.append('files', image[i]);
-    }
+    if(image)
+      for (let i = 0; i < image.length; i++) {
+        formData.append('files', image[i]);
+      }
 
     dispatch(createPost(formData, classData._id)).then(()=>{
       dispatch(getPostsAndAssignments(match.params.id));
     })
 
+    setInput("");setImage(null);setShowInput(false);
   };
 
   return (
     <>
-      {loading | loading1 ? (
+      {((loading | loading1) | (classData===undefined)) ? (
         <Loader />
       ) : (
         <>

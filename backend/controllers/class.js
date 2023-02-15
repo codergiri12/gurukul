@@ -109,7 +109,7 @@ exports.createAssignment = catchAsyncErrors(async (req, res,next)=>{
   }))
 
   const assignment = await Assignment.create({
-    title,description,points,classId,files
+    title,description,points,classId,files,postedBy: _class.ownerId
   })
 
   _class.assignments.push(assignment);
@@ -261,9 +261,7 @@ exports.getAllPostsAndAssignments = catchAsyncErrors(async(req,res,next)=>{
   const {classid} = req.params;
   const _class = await Class.findById(classid).populate({path:'posts',populate:{path:"postedBy"}}).populate({
     path:"assignments",
-    populate:{
-      path:"submissions"
-    }
+    populate:[{path:"postedBy"},{path:"submissions"}]
   });
   const posts = _class.posts;
   const assignments = _class.assignments;

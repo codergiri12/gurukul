@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Login, Home , ClassHeader, Class } from "./components";
+import { Login, Home , ClassHeader, Class , CreateAssignment } from "./components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import ProtectedRoute  from "./routes/Routes";
+import {ProtectedRoute}  from "./routes/Routes";
 import store from "./redux/store/store"
 import { loadUser } from "./redux/actions/userAction";
-function App() {
+function App({match}) {
 
   useEffect(() => {
+    console.log("----------------FNNNNNNSSSSSSSS----------------")
     store.dispatch(loadUser());
   }, []);
 
@@ -14,7 +15,8 @@ function App() {
     <Router>
       <Switch>  
         <Route exact path="/login" component={Login}  />
-        <ProtectedRoute exact path="/class/:id" component={Class} />
+        <Route exact path="/class/:id/createAssignment" component={CreateAssignment} isAdmin={true} />
+        <ProtectedRoute exact path="/class/:id" component={Class}  match = {match} />
         <ProtectedRoute exact path="/" component={Home} />
       </Switch>
     </Router>

@@ -13,6 +13,7 @@ const assignmentSchema = new Schema({
   points:{type:Number,required:true},
   classComments:{type:Array},
   files:[{type:Object}],
+  postedBy:{type:Schema.ObjectId,ref:"User"},
   submissions:[{type:Schema.Types.ObjectId, ref: 'Submission'}]
 
 });

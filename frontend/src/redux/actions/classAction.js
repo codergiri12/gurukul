@@ -1,4 +1,4 @@
-import { CREATE_POSTS_FAILURE, CREATE_POSTS_REQUEST, CREATE_POSTS_SUCCESS, GET_CLASS_FAILURE, GET_CLASS_REQUEST, GET_CLASS_SUCCESS, GET_POSTS_FAILURE, GET_POSTS_REQUEST, GET_POSTS_SUCCESS } from "../constants/classConstants";
+import { CREATE_ASSIGNMENT_FAILURE, CREATE_ASSIGNMENT_REQUEST, CREATE_ASSIGNMENT_SUCCESS, CREATE_POSTS_FAILURE, CREATE_POSTS_REQUEST, CREATE_POSTS_SUCCESS, GET_CLASS_FAILURE, GET_CLASS_REQUEST, GET_CLASS_SUCCESS, GET_POSTS_FAILURE, GET_POSTS_REQUEST, GET_POSTS_SUCCESS } from "../constants/classConstants";
 
 import axios from "../../axios";
 import { CLEAR_ERRORS } from "../constants/userConstants";
@@ -7,7 +7,6 @@ import { CLEAR_ERRORS } from "../constants/userConstants";
 export const getClass = (id,user) => async (dispatch) => {
   try {
     dispatch({ type: GET_CLASS_REQUEST });
-
     const { data } = await axios.get(`/class/${id}`);
     dispatch({ type: GET_CLASS_SUCCESS, payload: {class:data.class,user}});
   } catch (error) {
@@ -36,6 +35,20 @@ export const createPost = (formData,id) => async (dispatch) => {
     dispatch({ type: CREATE_POSTS_SUCCESS, payload: data.post});
   } catch (error) {
     dispatch({ type: CREATE_POSTS_FAILURE, payload: error.response.data.message });
+  }
+};
+export const createAssignment = (formData,id) => async (dispatch) => {
+  try {
+    dispatch({ type: CREATE_ASSIGNMENT_REQUEST });
+
+    const config = { headers: { "Content-Type": "multipart/form-data" } };
+    const { data } = await axios.post(`/class/createAssignment/${id}`,formData,config);
+
+    console.log(data,"data");
+    dispatch({ type: CREATE_ASSIGNMENT_SUCCESS, payload: data.assignment });
+  } catch (error) {
+    console.error("error: ",error)
+    dispatch({ type: CREATE_ASSIGNMENT_FAILURE, payload: error.response.data.message });
   }
 };
 

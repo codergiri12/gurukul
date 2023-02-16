@@ -5,6 +5,7 @@ import Avatar from '@mui/material/Avatar';
 import { FolderOpen, PermContactCalendar } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 import "../styles/Home.css";
+import HomeHeader from './Header/HomeHeader';
 
 const ClassCard = ({ classData }) => {
   return (
@@ -40,8 +41,8 @@ const Home = () => {
       {
         loading ? <Loader /> : (
           <>
-            <div className='text-4xl font-bold' >Home</div>
-            <div>
+            <HomeHeader/>
+            <div className='mt-16 ml-4'>
               {
                 user.classes.map((classData,index)=>{
                   return (<ClassCard classData = {classData} key={index}/>);

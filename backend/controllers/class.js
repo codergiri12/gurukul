@@ -2,22 +2,24 @@ const sendToken = require("../utils/jwttoken");
 const {sendEmail} = require("../utils/utils");
 const crypto = require("crypto");
 const ErrorHander = require("../utils/errorhandler");
-const {User,Class,Submission , Assignment,Post} = require("../models");
+const {User,Class,Submission , Assignment,Post, Grade} = require("../models");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const mongoose = require("mongoose");
+const { request } = require("http");
 
 const ObjectId = require("mongoose").Types.ObjectId;
 
-exports.getClass = catchAsyncErrors(async (req, res, next) => {
-  const {classid} =  req.params;
-  const _class = await Class.findById(classid);
-  if(!_class) {
+exports.getClass = (async (req, res, next) => {
+  try{
+    const {classid} =  req.params;
+    const _class = await Class.findById(classid);
+    res.status(200).json({
+      success: true,
+      class : _class
+    })
+  }catch(err){
     return next(new ErrorHander("Class not found",400));
   }
-  res.status(200).json({
-    success: true,
-    class : _class
-  })
 })
 
 exports.createClass = catchAsyncErrors(async (req, res, next) => {
@@ -172,16 +174,26 @@ exports.submitAssignment = catchAsyncErrors(async (req, res, next)=>{
     fileName:file.filename,
     originalName:file.originalname
   }))
-
-  const student = await User.findById(studentid);
-  const assignment = await Assignment.findById(assignmentid);
-
-  if(!student){
-    return next(new ErrorHander("Student not found"));
+  let student , assignment;
+  try{
+    student = await User.findOne({_id:studentid});
+    assignment = await Assignment.findOne({_id:assignmentid});
+  }catch(err){
+    return next(new ErrorHander("Student or Assignment not exist",400));
   }
-  if(!assignment){
-    return next(new ErrorHander("Assignment not found"));
-  }
+
+  Submission.findOneAndDelete({assignmentId:assignmentid , studentId:studentid}, (err,data)=>{
+    if(err){
+      return next(new ErrorHander(err.message,400));
+    }
+    if(!data) return null;
+    Assignment.updateOne({_id:assignmentid }, { $pull: { submissions: data._id } }, function(err, dataNew){
+      if(err){
+        return next(new ErrorHander(err.message,401));
+      }
+    });
+  });
+
 
   const grade = await Grade.create({
     studentId:studentid,
@@ -220,6 +232,34 @@ exports.submitAssignment = catchAsyncErrors(async (req, res, next)=>{
   })
 });
 
+exports.removeSubmission = catchAsyncErrors(async(req,res,next)=>{
+  const {assignmentid,studentid} = req.params;
+
+  let student , assignment;
+  try{
+    student = await User.findOne({_id:studentid});
+    assignment = await Assignment.findOne({_id:assignmentid});
+  }catch(err){
+    return next(new ErrorHander("Student or Assignment not exist",400));
+  }
+
+  Submission.findOneAndDelete({assignmentId:assignmentid , studentId:studentid}, (err,data)=>{
+    if(err){
+      return next(new ErrorHander(err.message,400));
+    }
+    if(!data) return null;
+    Assignment.updateOne({_id:assignmentid }, { $pull: { submissions: data._id } }, function(err, dataNew){
+      if(err){
+        return next(new ErrorHander(err.message,401));
+      }
+    });
+  });
+
+  res.status(201).json({
+    success:true,
+    message: "submission successfully removed"
+  })
+})
 exports.createPost = catchAsyncErrors(async(req,res,next)=>{
   const {description , postedBy} = req.body;
   const {classid} = req.params;
@@ -255,6 +295,30 @@ exports.createPost = catchAsyncErrors(async(req,res,next)=>{
     message:"Post successfully created",
     post
   });
+})
+
+exports.getPost = (async(req,res,next)=>{
+  
+  try{
+    const {postId} = req.params;
+    const post = await Post.findById(postId).populate("postedBy");
+    res.status(200).json({success:true,message:"Post retrieved successfully", post});
+  }catch(err){
+    return next(new ErrorHander("Post not found",400));
+  }
+})
+
+exports.getAssignment = (async(req,res,next)=>{
+  
+  try{
+    const {assignmentId, studentId} = req.params;
+    const assignment = await Assignment.findById(assignmentId).populate("postedBy");
+    const submission = await Submission.findOne({assignmentId, studentId}).populate("grade");
+    res.status(200).json({success:true,message:"Assignment retrieved successfully", assignment,submission});
+  }catch(err){
+    // console.log(err);
+    return next(new ErrorHander("Assignment not found",400));
+  }
 })
 
 exports.getAllPostsAndAssignments = catchAsyncErrors(async(req,res,next)=>{

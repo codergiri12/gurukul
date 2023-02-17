@@ -30,15 +30,17 @@ const Class = ({ match }) => {
 
   useEffect(() => {
     if (error) {
-      if (error === "Resource not found. Invalid: _id") {
-        alert.error("Class not found");
-        dispatch(clearErrors());
+      alert.error(error);
+      const x = error;
+      dispatch(clearErrors());
+      if (x === "Class not found") {
         history.push("/");
-      } else {
-        alert.error(error);
-        dispatch(clearErrors());
-        history.push(`/class/${match.params.id}`)
-      }
+      } 
+      // else {
+      //   alert.error(error);
+      //   dispatch(clearErrors());
+      //   history.push(`/class/${match.params.id}`)
+      // }
     }
   }, [dispatch, error, alert]);
 

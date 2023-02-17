@@ -9,6 +9,9 @@ import Announcement from "./Announcement";
 import ReactQuill from 'react-quill';
 
 import 'react-quill/dist/quill.snow.css';
+import ReactQuill from 'react-quill';
+
+import 'react-quill/dist/quill.snow.css';
 
 import "../../styles/Class/Class.css";
 
@@ -116,7 +119,7 @@ const Class = ({ match }) => {
                           /> */}
                           <ReactQuill
                           id=""
-                          className="pb-8 w-full h-48"
+                          className="pb-8 w-full h-48 px-2"
                           multiline
                           label="Announce Something to class"
                           variant="filled"
@@ -162,6 +165,11 @@ const Class = ({ match }) => {
               </div>
             </div>
           </div>
+
+
+
+
+       
         </>
       )}
     </>

@@ -110,7 +110,7 @@
 }
 .main__ancContent {
   padding: 30px;
-  width: 70vw;
+  width: 53vw;
   color: rgba(0, 0, 0, 0.549);
 }
 
@@ -134,7 +134,7 @@
 .main__buttons {
   display: flex;
   justify-content: space-between;
-  width: 100%;
+  width: 90%;
   margin-top: 20px;
 }
 @media only screen and (max-width: 842px) {

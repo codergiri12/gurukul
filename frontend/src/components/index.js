@@ -6,5 +6,5 @@ import Login from "./Login";
 import Post from "./Assignment/Post"
 import Assignment from "./Assignment/Assignment";
 import Studentwork from "./Assignment/Studentwork";
-
-export { Class, Home, ClassHeader, Login , CreateAssignment, Post , Assignment , Studentwork };
+import NotFound from "./NotFound";
+export { NotFound ,  Class, Home, ClassHeader, Login , CreateAssignment, Post , Assignment , Studentwork };

@@ -7,10 +7,6 @@ import Loader from "../layout/Loader";
 import { Avatar, Button, TextField } from "@mui/material";
 import Announcement from "./Announcement";
 import ReactQuill from 'react-quill';
-
-import 'react-quill/dist/quill.snow.css';
-import ReactQuill from 'react-quill';
-
 import 'react-quill/dist/quill.snow.css';
 
 import "../../styles/Class/Class.css";

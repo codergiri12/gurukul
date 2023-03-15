@@ -205,7 +205,7 @@ exports.submitAssignment = catchAsyncErrors(async (req, res, next)=>{
 
   let submissionStatus;
   if(!assignment.dueDate || Date.now() <= assignment.dueDate){
-    submissionStatus = "Assigned";
+    submissionStatus = "Submitted";
   }else{
     submissionStatus = "Submitted Late";
   }
@@ -345,17 +345,23 @@ exports.getAllPostsAndAssignments = catchAsyncErrors(async(req,res,next)=>{
 
 exports.getAllSubmissions = catchAsyncErrors(async(req,res,next)=>{
   const {assignmentid} = req.params;
-  const assignment = await Assignment.findById(assignmentid).populate({
-    path:"submissions",
-    populate:{
-      path:"grade"
-    }
-  }).populate({
-    path:"classId",
-    populate:{
-      path:"students"
-    }
-  })
+  let assignment;
+  
+  try{
+    assignment = await Assignment.findById(assignmentid).populate({
+      path:"submissions",
+      populate:{
+        path:"grade"
+      }
+    }).populate({
+      path:"classId",
+      populate:{
+        path:"students"
+      }
+    })
+  }catch(err){
+    return next(new ErrorHander("Assignment not found",400));
+  }
 
   let notSubmitted = [];
   let submitted = [];
@@ -377,3 +383,36 @@ exports.getAllSubmissions = catchAsyncErrors(async(req,res,next)=>{
   })
 })
 
+exports.getSubmission = catchAsyncErrors(async(req,res,next)=>{
+  const {submissionid} = req.params;
+  let submission;
+  
+  try{
+    submission = await Submission.findById(submissionid).populate("grade").populate("assignmentId").populate("studentId");
+  }catch(err){
+    return next(new ErrorHander("Submission not found",400));
+  }
+
+  res.status(200).json({
+    success:true,
+    message:" Submission retrieved successfully",
+    submission
+  })
+})
+
+exports.assignGrade = catchAsyncErrors(async(req,res,next)=>{
+  const {gradeId} = req.params;
+  const {marks} = req.body;
+  
+  Grade.findByIdAndUpdate(gradeId,{marks , markingStatus:"Marked"},{new:true})
+    .then((newGrade)=>{
+      res.status(200).json({
+        success:true,
+        message:"Updated Grade successfully",
+        grade : newGrade
+      })
+    })
+    .catch((err)=>{
+      return next(new ErrorHander(err.message + "  Error while updating grade",400));
+    })
+})

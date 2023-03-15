@@ -55,7 +55,7 @@ const Assignment = ({match}) => {
       dispatch(clearErrors());
       if (x === "Class not found") {
         history.push("/");
-      }else if(x === 'Post not found'){
+      }else if(x === 'Assignment not found'){
         history.push(`/class/${match.params.classId}`)
       }
     }

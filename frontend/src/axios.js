@@ -1,13 +1,35 @@
 import axios from 'axios';
 
-const axiosClient = axios.create();
+const api = 'http://localhost:4000/api/v1';
+const token = window.localStorage.getItem("token");
 
-axiosClient.defaults.baseURL = 'http://localhost:4000/api/v1';
+const axiosIntance = axios.create({
+  baseURL: api,
+  headers: {
+    Authorization: token ? `Bearer ${token}` : "",
+  },
+});
 
-axiosClient.defaults.headers = {
-  'Content-Type': 'application/json',
-  Accept: 'application/json'
-};
+axiosIntance.interceptors.request.use((req) => {
+  if (localStorage.getItem("token")) {
+    req.headers.Authorization = `Bearer ${localStorage.getItem("token")}`;
+  }
+  return req;
+});
 
-axios.defaults.withCredentials = true
-export default axiosClient;
+// axiosIntance.interceptors.response.use(
+//   (res) => {
+//     return res;
+//   },
+//   (error) => {
+//     console.log(error.response);
+//     const status = error.response ? error.response.status : 500;
+//     if (status && status === 500) {
+//       localStorage.clear();
+//       store.dispatch({ type: "LOGOUT_SUCCESS" });
+//     }
+//     return Promise.reject(error);
+//   }
+// );
+
+export default axiosIntance;

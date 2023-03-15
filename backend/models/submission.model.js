@@ -10,7 +10,7 @@ const submissionSchema = new Schema({
     type: Date,
     default: Date.now,
   },
-  submissionStatus: {type: String,enum:["Assigned", "Submitted Late","Pending"],default:"Pending"},
+  submissionStatus: {type: String,enum:["Assigned", "Submitted Late","Submitted"],default:"Assigned"},
   assignmentName:{type:String,required:true},
   privateComments:{type:Array},
   files:[{type:Object}],

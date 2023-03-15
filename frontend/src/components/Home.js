@@ -1,10 +1,13 @@
 import React,{Fragment, useRef, useState, useEffect} from 'react'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Loader from './layout/Loader';
 import Avatar from '@mui/material/Avatar';
 import { FolderOpen, PermContactCalendar } from "@mui/icons-material";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import "../styles/Home.css";
+import HomeHeader from './Header/HomeHeader';
+import { clearErrors, loadUser } from '../redux/actions/userAction';
+import { useAlert } from 'react-alert';
 
 const ClassCard = ({ classData }) => {
   return (
@@ -34,14 +37,31 @@ const ClassCard = ({ classData }) => {
 };
 
 const Home = () => {
-  const {user,loading} = useSelector((state)=>state.user);
+  const {user,loading,error} = useSelector((state)=>state.user);
+  const history = useHistory();
+  const dispatch = useDispatch();
+  const alert = useAlert();
+
+  useEffect(() => {
+    if(!user)
+      dispatch(loadUser());
+  }, [user, dispatch])
+  
+
+  useEffect(() => {
+    if (error) {
+      alert.error(error);
+      const x = error;
+      dispatch(clearErrors());
+    }
+  }, [dispatch, error, alert]);
   return (
     <Fragment>
       {
         loading ? <Loader /> : (
           <>
-            <div className='text-4xl font-bold' >Home</div>
-            <div>
+            <HomeHeader/>
+            <div className='mt-16 ml-4'>
               {
                 user.classes.map((classData,index)=>{
                   return (<ClassCard classData = {classData} key={index}/>);

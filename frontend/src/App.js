@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Login, Home , ClassHeader, Class , CreateAssignment } from "./components";
+import { Login, Home , ClassHeader, Class , CreateAssignment, Assignment, Post, Studentwork, StudentWorkDetails,NotFound } from "./components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {ProtectedRoute}  from "./routes/Routes";
 import store from "./redux/store/store"
 import { loadUser } from "./redux/actions/userAction";
-function App({match}) {
+function App() {
 
   useEffect(() => {
     console.log("----------------FNNNNNNSSSSSSSS----------------")
@@ -15,9 +15,14 @@ function App({match}) {
     <Router>
       <Switch>  
         <Route exact path="/login" component={Login}  />
-        <Route exact path="/class/:id/createAssignment" component={CreateAssignment} isAdmin={true} />
-        <ProtectedRoute exact path="/class/:id" component={Class}  match = {match} />
+        <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork" component={Studentwork} />
+        <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork/:submissionId" component={StudentWorkDetails} />
+        <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId" component={Assignment} />
+        {/* <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork" component={Assignment} /> */}
+        <ProtectedRoute exact path="/class/:id/createAssignment" component={CreateAssignment} />
+        <ProtectedRoute exact path="/class/:id" component={Class} />
         <ProtectedRoute exact path="/" component={Home} />
+        <Route component={NotFound} />
       </Switch>
     </Router>
   );

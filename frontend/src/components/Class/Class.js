@@ -6,6 +6,8 @@ import { clearErrors, createPost, getClass, getPostsAndAssignments } from "../..
 import Loader from "../layout/Loader";
 import { Avatar, Button, TextField } from "@mui/material";
 import Announcement from "./Announcement";
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 import "../../styles/Class/Class.css";
 
@@ -30,15 +32,17 @@ const Class = ({ match }) => {
 
   useEffect(() => {
     if (error) {
-      if (error === "Resource not found. Invalid: _id") {
-        alert.error("Class not found");
-        dispatch(clearErrors());
+      alert.error(error);
+      const x = error;
+      dispatch(clearErrors());
+      if (x === "Class not found") {
         history.push("/");
-      } else {
-        alert.error(error);
-        dispatch(clearErrors());
-        history.push(`/class/${match.params.id}`)
-      }
+      } 
+      // else {
+      //   alert.error(error);
+      //   dispatch(clearErrors());
+      //   history.push(`/class/${match.params.id}`)
+      // }
     }
   }, [dispatch, error, alert]);
 
@@ -105,16 +109,21 @@ const Class = ({ match }) => {
                   <div className="main__announcementsWrapper">
                     <div className="main__ancContent">
                       {showInput ? (
-                        <div className="main__form">
-                          <TextField
-                            id="filled-multiline-flexible"
-                            multiline
-                            label="Announce Something to class"
-                            variant="filled"
+                        <div className="main__form ">
+                          {/* <TextField
+                            
                             value={inputValue}
                             onChange={(e) => setInput(e.target.value)}
+                          /> */}
+                          <ReactQuill
+                          id=""
+                          className="pb-8 w-full h-48 px-2"
+                          multiline
+                          label="Announce Something to class"
+                          variant="filled"
+                          theme="snow" value={inputValue}  onChange={(e) => setInput(e.target.value)}
                           />
-                          <div className="main__buttons">
+                          <div className="main__buttons ">
                             <input
                               onChange={handleChange}
                               variant="outlined"
@@ -154,6 +163,11 @@ const Class = ({ match }) => {
               </div>
             </div>
           </div>
+
+
+
+
+       
         </>
       )}
     </>

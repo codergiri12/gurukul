@@ -16,8 +16,6 @@ let initialState = {
 };
 const loggerMiddleware = ({ getState }) => next => action => {
   console.log('Action type:', action.type);
-  console.log('Action payload:', action.payload);
-  console.log('State before:', getState());
   const result = next(action);
   console.log('State after:', getState());
   return result;

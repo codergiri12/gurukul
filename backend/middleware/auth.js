@@ -4,16 +4,14 @@ const jwt = require("jsonwebtoken");
 const {User} = require("../models");
 
 exports.isAuthenticatedUser = catchAsyncErrors(async (req, res, next) => {
-  const { token } = req.body;
 
-  if (!token) {
+  if (req.headers.authorization) {
+    const token = req.headers.authorization.split(" ")[1];
+    const user = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = user;
+  } else {
     return next(new ErrorHander("Please Login to access this resource", 401));
   }
-
-  const decodedData = jwt.verify(token, process.env.JWT_SECRET);
-
-  req.user = await User.findById(decodedData.id).populate("classes");
-
   next();
 });
 

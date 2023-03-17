@@ -7,7 +7,7 @@ import Loader from '../layout/Loader';
 import {Button} from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-
+import '../../styles/Assignment.css'
 const File = ({name , index , handleDelete})=>{
   
   return (
@@ -43,9 +43,10 @@ const Assignment = ({match}) => {
 
   useEffect(() => {
     dispatch(getClass(match.params.classId,user)).then(()=>{
+      console.log("id: " , match.params.assignmentId , "  ---" , user);
       dispatch(getAssignment(match.params.assignmentId,user._id));
     })
-  }, [user]);
+  }, [user,dispatch]);
 
 
   useEffect(() => {
@@ -97,36 +98,47 @@ const Assignment = ({match}) => {
         <Loader />
       ) : (
         <>
-          <div>
+          <div className='flex flex-row mt-16 gap-x-10'>
             {/* // TODO: create a component for below one.... */}
-            <div className="amt">
-              <div className="amt__Cnt">
-                <div className="amt__top">
+            <div className="amt w-2/3">
+              <div className="amt__Cnt border border-2xl ">
+                <div className="amt__top text-4xl">
                   <div>{assignment.title}</div>
                 </div>
                 <p className="amt__txt">{assignment.description}</p>
                 <p className="amt__txt">{assignment._id}</p>
                 <p className="amt__txt">{assignment.postedBy.email}</p>
               </div>
+
             </div>
+            <div className='border border-2xl shadow-md shadow-gray-400 rounded-md
+            '>
+            <div className='flex flex-row justify-center items-center gap-x-2 py-4 px-3'>
+                  <a className='text-2xl '>Your work</a>
+                  <a className='text-sm'>Handed on time</a>
+                </div>
             {(submission) ? (
-              <div>
-                <div className="flex items-center justify-center w-full">
-                  <div>
+              <div className='flex flex-col justify-center  px-4  gap-y-4'>
+                
+                <div className="flex items-center justify-center w-full ">
+                  <div  className='w-full'>
                     {submission.files.map((file, index) => (
                       <SubmittedFile
                         index={index}
                         name={file.originalName}
+                        className='gap-y-4 '
                       />
                     ))}
                   </div>
                 </div>
-                <Button variant="contained" component="label" onClick = {handleUnSubmit}>
+                <div className="flex flex-row justify-center">
+                <Button className='' variant="contained" component="label" onClick = {handleUnSubmit}>
                   UnSubmit
                 </Button>
+                </div>
               </div>
             ) : (
-              <div>
+              <div className="flex items-center justify-center ">
                 <div className="flex items-center justify-center w-full">
                   {image?.length ? (
                     <div>
@@ -156,6 +168,8 @@ const Assignment = ({match}) => {
                 </Button>
               </div>
             )}
+            </div>
+            
           </div>
           <div>
             <Link className = "underline text-blue-600" to={`/class/${classData._id}/assignment/${assignment._id}/studentwork`}>

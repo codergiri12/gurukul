@@ -42,9 +42,10 @@ const LoginSignUp = ({ history, location }) => {
 
     const myForm = new FormData();
 
-    myForm.set("name", name);
-    myForm.set("email", email);
-    myForm.set("password", password);
+    myForm.append("name", name);
+    myForm.append("email", email);
+    myForm.append("password", password);
+
     dispatch(register(myForm));
   };
 

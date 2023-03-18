@@ -7,8 +7,9 @@ const { registerUser,
   resetPassword,getUserDetails} = require("../controllers/auth");
 
 const { isAuthenticatedUser} = require("../middleware/auth");
+const { upload } = require("../utils/utils");
 
-router.route("/register").post(registerUser);
+router.route("/register").post(upload.none() , registerUser);
 
 router.route("/login").post(loginUser);
 

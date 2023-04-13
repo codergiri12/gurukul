@@ -16,6 +16,7 @@ const Class = ({ match }) => {
   const dispatch = useDispatch();
   const alert = useAlert();
   const {
+    successMessage,
     error,
     loading,
     class: classData,
@@ -45,6 +46,13 @@ const Class = ({ match }) => {
       // }
     }
   }, [dispatch, error, alert]);
+
+  useEffect(() => {
+    if (successMessage) {
+      alert.success(successMessage);
+      dispatch(clearErrors());
+    }
+  }, [dispatch, successMessage, alert]);
 
   const [showInput, setShowInput] = useState(false);
   const [inputValue, setInput] = useState("");
@@ -110,18 +118,15 @@ const Class = ({ match }) => {
                     <div className="main__ancContent">
                       {showInput ? (
                         <div className="main__form ">
-                          {/* <TextField
-                            
-                            value={inputValue}
-                            onChange={(e) => setInput(e.target.value)}
-                          /> */}
                           <ReactQuill
-                          id=""
-                          className="pb-8 w-full h-48 px-2"
-                          multiline
-                          label="Announce Something to class"
-                          variant="filled"
-                          theme="snow" value={inputValue}  onChange={(e) => setInput(e.target.value)}
+                            id=""
+                            className="pb-8 w-full h-48 px-2"
+                            multiline
+                            label="Announce Something to class"
+                            variant="filled"
+                            theme="snow" 
+                            value={inputValue}  
+                            onChange={setInput}
                           />
                           <div className="main__buttons ">
                             <input

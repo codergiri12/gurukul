@@ -5,14 +5,13 @@ const ErrorHander = require("../utils/errorhandler");
 const {User,Class,Submission , Assignment,Post, Grade} = require("../models");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const mongoose = require("mongoose");
-const { request } = require("http");
 
 const ObjectId = require("mongoose").Types.ObjectId;
 
 exports.getClass = (async (req, res, next) => {
   try{
     const {classid} =  req.params;
-    const _class = await Class.findById(classid);
+    const _class = await Class.findById(classid).populate("exams");
     res.status(200).json({
       success: true,
       class : _class
@@ -100,9 +99,6 @@ exports.createAssignment = catchAsyncErrors(async (req, res,next)=>{
     return next(new ErrorHander("Class not found"));
   }
 
-  if(req.files.length === 0){
-    return next(new ErrorHander("Select at least a file"));
-  }
   let files = [];
 
   req.files.map(file => files.push({
@@ -122,6 +118,53 @@ exports.createAssignment = catchAsyncErrors(async (req, res,next)=>{
     message:"Assignment created successfully",
     assignment
   })
+})
+
+exports.editAssignment = catchAsyncErrors(async(req,res,next)=>{
+  const {title,points,description,dueDate} = req.body;
+  const {assignmentId} = req.params;
+
+  let files = [];
+
+  req.files.map(file => files.push({
+    fileName:file.filename,
+    originalName:file.originalname
+  }))
+
+  const assignment = await Assignment.findByIdAndUpdate(assignmentId,{
+    title,points,dueDate,
+    description,
+    files
+  },{new:true});
+
+  res.status(200).json({
+    success:true,
+    message:"Assignment successfully Updated",
+    assignment
+  });
+})
+exports.deleteAssignment = catchAsyncErrors(async(req,res,next)=>{
+  const {classId,assignmentId} = req.params;
+  console.log({classId,assignmentId})
+  let _class;
+  try{
+    _class = await Class.findById(classId);
+  }catch(err){
+    return next(new ErrorHander("Class not Found",400));
+  }
+
+  await Assignment.findByIdAndDelete(assignmentId);
+
+  const updatedClass = await Class.findByIdAndUpdate(classId,
+    { $pull: { assignments: assignmentId } },
+    { new: true }
+  ).populate("assignments");
+
+  res.status(200).json({
+    success:true,
+    message:"Assignment successfully Deleted",
+    assignments:updatedClass.assignments
+  });
 })
 
 exports.getAllFiles = catchAsyncErrors(async (req, res, next)=>{
@@ -264,9 +307,6 @@ exports.createPost = catchAsyncErrors(async(req,res,next)=>{
   const {description , postedBy} = req.body;
   const {classid} = req.params;
 
-  if(req.files.length === 0){
-    return next(new ErrorHander("Select at least a file"));
-  }
   let files = [];
 
   req.files.map(file => files.push({
@@ -296,7 +336,55 @@ exports.createPost = catchAsyncErrors(async(req,res,next)=>{
     post
   });
 })
+exports.editPost = catchAsyncErrors(async(req,res,next)=>{
+  const {description} = req.body;
+  const {postId} = req.params;
 
+  let files = [];
+
+  req.files.map(file => files.push({
+    fileName:file.filename,
+    originalName:file.originalname
+  }))
+
+  const post = await Post.findByIdAndUpdate(postId,{
+    description,
+    files
+  },{new:true});
+
+  res.status(200).json({
+    success:true,
+    message:"Post successfully Updated",
+    post
+  });
+})
+exports.deletePost = catchAsyncErrors(async(req,res,next)=>{
+  const {classId,postId} = req.params;
+
+  let _class;
+  try{
+    _class = await Class.findById(classId);
+  }catch(err){
+    return next(new ErrorHander("Class not Found",400));
+  }
+
+  let post ;
+  try{
+    post = await Post.findByIdAndDelete(postId);
+  }catch(err){
+    return next(new ErrorHander("Post not found" , 400));
+  }
+
+  await Class.findByIdAndUpdate(classId,
+    { $pull: { posts: postId } }
+  );
+
+  res.status(200).json({
+    success:true,
+    message:"Post successfully Deleted",
+    post
+  });
+})
 exports.getPost = (async(req,res,next)=>{
   
   try{

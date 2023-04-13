@@ -9,6 +9,7 @@ const classSchema = new Schema({
   classCode: { type: String, required: true, unique: true },
   posts: [{ type: Schema.Types.ObjectId, ref: 'Post' }],
   assignments : [{ type: Schema.Types.ObjectId, ref: "Assignment" }],
+  exams : [{ type: Schema.Types.ObjectId, ref: "Exam" }],
   // notes: [{ type: Schema.Types.ObjectId, ref: 'Notes' }]
 });
 

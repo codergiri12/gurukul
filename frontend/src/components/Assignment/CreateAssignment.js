@@ -47,8 +47,8 @@ const CreateAssignment = ({match}) => {
 
   const [inputValue, setInput] = useState("");
   const [title , setTitle] = useState("");
-  const [image, setImage] = useState(null);
   const [points, setPoints] = useState(null);
+  const [image, setImage] = useState(null);
 
   const handleChange = (e) => {
     if (e.target.files) {

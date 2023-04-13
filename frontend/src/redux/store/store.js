@@ -5,10 +5,12 @@ import { composeWithDevTools } from "redux-devtools-extension";
 
 import {userReducer} from "../reducers/userReducer";
 import { classReducer } from "../reducers/classReducer";
+import { examReducer } from "../reducers/examReducer";
 
 const reducer = combineReducers({
   user: userReducer,
-  class: classReducer
+  class: classReducer,
+  exam : examReducer
 });
 
 let initialState = {

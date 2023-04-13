@@ -8,6 +8,7 @@ import {Button} from '@mui/material'
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
 import '../../styles/Assignment.css'
+import {AssignmentHeader} from '../Header/AssignmentHeader';
 const File = ({name , index , handleDelete})=>{
   
   return (
@@ -25,6 +26,9 @@ const SubmittedFile = ({name , index })=>{
     </div>
   )
 }
+
+const fileUrl = "http://localhost:4000/api/v1/class/file";
+
 const Assignment = ({match}) => {
 
   const history = useHistory();
@@ -69,6 +73,10 @@ const Assignment = ({match}) => {
     }
   };
 
+  const openInNewTab = (link) => {
+    window.open(link, '_blank', 'noreferrer');
+  };
+
   const handleDelete = (index)=>{
     const cpy = [...image];
     cpy.splice(index,1);
@@ -98,7 +106,8 @@ const Assignment = ({match}) => {
         <Loader />
       ) : (
         <>
-          <div className='flex flex-row mt-16 gap-x-10'>
+          <AssignmentHeader classData={classData} assignment={assignment} />
+          <div className="flex flex-row mt-16 gap-x-10">
             {/* // TODO: create a component for below one.... */}
             <div className="amt w-2/3">
               <div className="amt__Cnt border border-2xl ">
@@ -110,69 +119,91 @@ const Assignment = ({match}) => {
                 <p className="amt__txt">{assignment.postedBy.email}</p>
               </div>
 
-            </div>
-            <div className='border border-2xl shadow-md shadow-gray-400 rounded-md
-            '>
-            <div className='flex flex-row justify-center items-center gap-x-2 py-4 px-3'>
-                  <a className='text-2xl '>Your work</a>
-                  <a className='text-sm'>Handed on time</a>
-                </div>
-            {(submission) ? (
-              <div className='flex flex-col justify-center  px-4  gap-y-4'>
-                
-                <div className="flex items-center justify-center w-full ">
-                  <div  className='w-full'>
-                    {submission.files.map((file, index) => (
-                      <SubmittedFile
-                        index={index}
-                        name={file.originalName}
-                        className='gap-y-4 '
-                      />
-                    ))}
+              <p className="text-2xl font-medium ml-4">Files: </p>
+              <div className="flex flex-wrap justify-evenly items-center">
+                {assignment.files.map((file) => (
+                  <div
+                    className="cursor-pointer border border-2 border-black w-1/3"
+                    onClick={() => {
+                      openInNewTab(fileUrl + "/" + file.fileName);
+                    }}
+                  >
+                    {file.originalName}
                   </div>
-                </div>
-                <div className="flex flex-row justify-center">
-                <Button className='' variant="contained" component="label" onClick = {handleUnSubmit}>
-                  UnSubmit
-                </Button>
-                </div>
+                ))}
               </div>
-            ) : (
-              <div className="flex items-center justify-center ">
-                <div className="flex items-center justify-center w-full">
-                  {image?.length ? (
-                    <div>
-                      {image.map((file, index) => (
-                        <File
+            </div>
+            <div className="border border-2xl shadow-md shadow-gray-400 rounded-md">
+              <div className="flex flex-row justify-center items-center gap-x-2 py-4 px-3">
+                <a className="text-2xl ">Your work</a>
+                <a className="text-sm">Handed on time</a>
+              </div>
+              {submission ? (
+                <div className="flex flex-col justify-center  px-4  gap-y-4">
+                  <div className="flex items-center justify-center w-full ">
+                    <div className="w-full">
+                      {submission.files.map((file, index) => (
+                        <SubmittedFile
                           index={index}
-                          name={file.name}
-                          handleDelete={handleDelete}
+                          name={file.originalName}
+                          className="gap-y-4 "
                         />
                       ))}
                     </div>
-                  ) : (
-                    <Button variant="contained" component="label">
-                      <AddIcon />
-                      Upload Submission
-                      <input
-                        hidden
-                        multiple
-                        type="file"
-                        onChange={handleChange}
-                      />
+                  </div>
+                  <div className="flex flex-row justify-center">
+                    <Button
+                      className=""
+                      variant="contained"
+                      component="label"
+                      onClick={handleUnSubmit}
+                    >
+                      UnSubmit
                     </Button>
-                  )}
+                  </div>
                 </div>
-                <Button variant="contained" component="label" onClick = {handleSubmit}>
-                  Submit
-                </Button>
-              </div>
-            )}
+              ) : (
+                <div className="flex items-center justify-center ">
+                  <div className="flex items-center justify-center w-full">
+                    {image?.length ? (
+                      <div>
+                        {image.map((file, index) => (
+                          <File
+                            index={index}
+                            name={file.name}
+                            handleDelete={handleDelete}
+                          />
+                        ))}
+                      </div>
+                    ) : (
+                      <Button variant="contained" component="label">
+                        <AddIcon />
+                        Upload Submission
+                        <input
+                          hidden
+                          multiple
+                          type="file"
+                          onChange={handleChange}
+                        />
+                      </Button>
+                    )}
+                  </div>
+                  <Button
+                    variant="contained"
+                    component="label"
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </Button>
+                </div>
+              )}
             </div>
-            
           </div>
           <div>
-            <Link className = "underline text-blue-600" to={`/class/${classData._id}/assignment/${assignment._id}/studentwork`}>
+            <Link
+              className="underline text-blue-600"
+              to={`/class/${classData._id}/assignment/${assignment._id}/studentwork`}
+            >
               Student Work
             </Link>
           </div>

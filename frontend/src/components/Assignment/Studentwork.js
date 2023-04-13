@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { clearErrors, getAssignment, getClass, getSubmissions, submitAssignment, unsubmitAssignment } from '../../redux/actions/classAction';
 import Loader from '../layout/Loader';
+import { StudentWorkHeader } from '../Header/AssignmentHeader';
 
 
 
@@ -90,25 +91,29 @@ const Studentwork = ({match}) => {
       {loading | !assignment | !submitted | !notSubmitted ? (
         <Loader />
       ) : (
-        <div className="">
-          <Select
-            value={checkboxValue}
-            onChange={(e) => {
-              setCheckboxValue(e.target.value);
-            }}
-          >
-            <MenuItem value={"All"}>All</MenuItem>
-            <MenuItem value={"Submitted"}>Submitted</MenuItem>
-            <MenuItem value={"Assignemd"}>Assigned</MenuItem>
-          </Select>
-          {filtered.map((item, index) => (
-            <SubmissionCard
-              index={index}
-              item={item}
-              url={`${baseUrl}/${classData._id}/assignment/${assignment._id}/studentwork/${item._id}`}
-            />
-          ))}
-        </div>
+        <>
+          <StudentWorkHeader assignment={assignment} classData={classData} />
+          <div className="">
+            <Select
+              value={checkboxValue}
+              onChange={(e) => {
+                setCheckboxValue(e.target.value);
+              }}
+            >
+              <MenuItem value={"All"}>All</MenuItem>
+              <MenuItem value={"Submitted"}>Submitted</MenuItem>
+              <MenuItem value={"Assignemd"}>Assigned</MenuItem>
+            </Select>
+            {filtered.map((item, index) => (
+              <SubmissionCard
+                index={index}
+                item={item}
+                url={`${baseUrl}/${classData._id}/assignment/${assignment._id}/studentwork/${item._id}`}
+              />
+            ))}
+          </div>
+        </>
+        
       )}
     </>
   );

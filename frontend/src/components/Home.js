@@ -60,8 +60,8 @@ const Home = () => {
       {
         loading ? <Loader /> : (
           <>
-            <HomeHeader/>
-            <div className='mt-16 ml-4'>
+            <HomeHeader user={user}/>
+            <div className='flex flex-wrap mt-16 ml-4'>
               {
                 user.classes.map((classData,index)=>{
                   return (<ClassCard classData = {classData} key={index}/>);

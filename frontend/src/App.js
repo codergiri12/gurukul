@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Login, Home , ClassHeader, Class , CreateAssignment, Assignment, Post, Studentwork, StudentWorkDetails,NotFound } from "./components";
+import { Login, Home , ClassHeader, Class , CreateAssignment, Assignment, Post, Studentwork, StudentWorkDetails,NotFound, Exams, Exam, StudentExam } from "./components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {ProtectedRoute}  from "./routes/Routes";
 import store from "./redux/store/store"
@@ -18,7 +18,9 @@ function App() {
         <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork" component={Studentwork} />
         <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork/:submissionId" component={StudentWorkDetails} />
         <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId" component={Assignment} />
-        {/* <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork" component={Assignment} /> */}
+        <ProtectedRoute exact path="/class/:classId/exams" component={Exams} />
+        <ProtectedRoute exact path="/class/:classId/exam/:examId" component={Exam} />
+        <ProtectedRoute exact path="/class/:classId/takeExam/:examId" component={StudentExam} />
         <ProtectedRoute exact path="/class/:id/createAssignment" component={CreateAssignment} />
         <ProtectedRoute exact path="/class/:id" component={Class} />
         <ProtectedRoute exact path="/" component={Home} />

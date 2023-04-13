@@ -35,9 +35,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Route Imports
 const auth = require("./routes/auth");
 const classroom = require("./routes/class");
-
+const exam = require("./routes/exam")
 app.use("/api/v1", auth);
 app.use("/api/v1/class", classroom);
+app.use("/api/v1/exam" , exam);
 
 // Middleware for Errors
 app.use(errorMiddleware);
@@ -45,6 +46,8 @@ app.use(errorMiddleware);
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server is working on http://localhost:${process.env.PORT}`);
 });
+
+require("./utils/socketIO")(server);
 
 // Unhandled Promise Rejection
 process.on("unhandledRejection", (err) => {

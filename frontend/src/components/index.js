@@ -11,5 +11,9 @@ import StudentWorkDetails from "./Assignment/StudentWorkDetails";
 import Exams from "./Exams/Exams"
 import Exam from "./Exams/Exam";
 import StudentExam from "./Exams/StudentExam";
+import Ide from "./Ide/Ide";
 
-export { NotFound ,  Class, Home, ClassHeader, Login , CreateAssignment, Post , Assignment , Studentwork , StudentWorkDetails , Exams , Exam , StudentExam };
+export { NotFound ,  Class, Home, ClassHeader, Login , CreateAssignment, Post , Assignment , Studentwork , StudentWorkDetails, Ide, Exams , Exam , StudentExam};
+
+
+

@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {Button,Menu,MenuItem,Fade} from '@mui/material';
 import ReactQuill from "react-quill";
+import File from "../layout/File";
 
 
 const fileUrl = "http://localhost:4000/api/v1/class/file";
@@ -483,13 +484,10 @@ const Post = ({item,id})=>{
           <MenuDots item={item} />
         </div>
         <div className="amt__txt"><div dangerouslySetInnerHTML={{ __html: item.description }} /></div>
-        <p className="text-2xl font-medium ml-4" >Files: </p>
-        <div className="flex flex-wrap justify-evenly items-center">
+        <div className="pl-4 flex flex-wrap justify-start items-center">
           {
             item.files.map(file=>(
-              <div className="cursor-pointer border border-2 border-black w-1/3" onClick={()=>{openInNewTab(fileUrl+"/"+file.fileName)}} >
-                {file.originalName}
-              </div>
+              <File file={file} className="mr-4" />
             ))
           }
         </div>

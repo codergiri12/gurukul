@@ -3,9 +3,13 @@ import { useAlert } from "react-alert";
 import { useDispatch, useSelector } from "react-redux";
 import Modal from "@mui/material/Modal";
 import { Link, useHistory } from "react-router-dom";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography,Button } from "@mui/material";
 import { clearErrors, getClass } from "../../redux/actions/classAction";
 import Loader from "../layout/Loader";
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import AddIcon from '@mui/icons-material/Add';
+
+
 import {
   clearErrors as clearExamErrors,
   createExam,
@@ -13,6 +17,7 @@ import {
   editExam,
   getExam,
 } from "../../redux/actions/examAction";
+import ClassHeader from "../Header/ClassHeader";
 const style = {
   position: "absolute",
   top: "50%",
@@ -36,6 +41,7 @@ const Exams = ({ match }) => {
     error,
     loading,
     class: classData,
+    isTeacher
   } = useSelector((state) => state.class);
   const { loading: loading1, user } = useSelector((state) => state.user);
   const {
@@ -123,72 +129,132 @@ const Exams = ({ match }) => {
     dispatch(deleteExam(examId , classData._id));
   }
 
+  const formatTime = (time) => {
+    const hours = Math.floor(time / 3600);
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = time % 60;
+  
+    const formattedHours = hours < 10 ? `0${hours}` : hours;
+    const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+    const formattedSeconds = seconds < 10 ? `0${seconds}` : seconds;
+  
+    if (formattedHours !== '00') {
+      return `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+    }
+  
+    return `${formattedMinutes}:${formattedSeconds}`;
+  };
+
   return (
     <>
-      {loading | !exams ? (
+      {loading | !exams | !classData ? (
         <Loader />
       ) : (
         <>
-          <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
-            <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
-              <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                <tr>
-                  <th scope="col" class="px-6 py-3">
-                    Exam name
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    Exam topic
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    Duration
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    Expiry Date
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    Total Marks
-                  </th>
-                  <th scope="col" class="px-6 py-3">
-                    Action
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {exams.map((exam) => (
+          <ClassHeader classData={classData} current="Exams" />
+          <div className="w-2/3 mt-8 mx-auto">
+            <div className="flex justify-between">
+              <div className="amt__top text-4xl text-blue-500">
+                <AssignmentIcon fontSize="large" className="" />
+                <div>{"Exams"}</div>
+              </div>
+              {isTeacher && (
+                <Button
+                  variant="contained"
+                  component="label"
+                  sx={{ borderRadius: "99px" }}
+                  onClick={() => {
+                    setCreateExamModal(true);
+                  }}
+                >
+                  <AddIcon />
+                  Create
+                </Button>
+              )}
+            </div>
+            <div class="mt-4 overflow-x-auto shadow-md sm:rounded-lg">
+              <table class="w-full text-sm text-left text-gray-500 dark:text-gray-400">
+                <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                  <tr>
+                    <th scope="col" class="px-6 py-3">
+                      Exam name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Exam topic
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Duration
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Expiry Date
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Total Marks
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Action
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {exams.map((exam) => (
                     <tr class="bg-white border-b dark:bg-gray-900 dark:border-gray-700">
                       <th
                         scope="row"
-                        onClick={()=>{history.push(`/class/${classData._id}/exam/${exam._id}`)}}
+                        onClick={() => {
+                          history.push(
+                            `/class/${classData._id}/exam/${exam._id}`
+                          );
+                        }}
                         class="cursor-pointer px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
                       >
                         {exam.name}
                       </th>
                       <td class="px-6 py-4">{exam.topic}</td>
-                      <td class="px-6 py-4">{exam.duration } {"  min"}</td>
-                      <td class="px-6 py-4">{new Date(exam.expiry).toISOString().slice(0,10)}</td>
-                      <td class="px-6 py-4">{exam.totalMarks}</td>
+                      <td class="px-6 py-4">{formatTime(exam.duration)}</td>
                       <td class="px-6 py-4">
-                        <button onClick={()=>{handleEditClick(exam)}} class="font-medium text-blue-600 dark:text-blue-500 hover:underline">
-                          Edit 
-                        </button>
-                        <button onClick={()=>{handleDeleteExam(exam._id)}} class="ml-2 font-medium text-red-600 dark:text-red-500 hover:underline">Remove</button>
+                        {new Date(exam.expiry).toISOString().slice(0, 10)}
                       </td>
+                      <td class="px-6 py-4">{exam.totalMarks}</td>
+                      {isTeacher ? (
+                        <td class="px-6 py-4">
+                          <button
+                            onClick={() => {
+                              handleEditClick(exam);
+                            }}
+                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => {
+                              handleDeleteExam(exam._id);
+                            }}
+                            class="ml-2 font-medium text-red-600 dark:text-red-500 hover:underline"
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      ) : (
+                        <td class="px-6 py-4">
+                          <button
+                            onClick={() => {
+                              history.push(`/class/${classData._id}/takeExam/${exam._id}`)
+                            }}
+                            class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                          >
+                            Take Exam
+                          </button>
+                        </td>
+                      )}
                     </tr>
-                ))}
-              </tbody>
-            </table>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <button
-            onClick={() => {
-              setCreateExamModal(true);
-            }}
-          >
-            {" "}
-            Create exam
-          </button>
-
-{/* Create exam */}
+          {/* Create exam */}
           <Modal
             open={createExamModal}
             onClose={() => {
@@ -344,7 +410,7 @@ const Exams = ({ match }) => {
             </Box>
           </Modal>
 
-{/* Edit Exam */}
+          {/* Edit Exam */}
           <Modal
             open={editExamModal}
             onClose={() => {
@@ -463,10 +529,7 @@ const Exams = ({ match }) => {
                       </div>
 
                       <div class="flex items-center justify-center">
-                        <div
-                          data-te-datepicker-init
-                          data-te-input-wrapper-init
-                        >
+                        <div data-te-datepicker-init data-te-input-wrapper-init>
                           <label
                             for="floatingInput"
                             class="pblock mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -477,7 +540,7 @@ const Exams = ({ match }) => {
                             type="date"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
                             placeholder="Select a date"
-                            value={new Date(expiry).toISOString().slice(0,10)}
+                            value={new Date(expiry).toISOString().slice(0, 10)}
                             onChange={(e) => {
                               setExpiry(e.target.value);
                             }}

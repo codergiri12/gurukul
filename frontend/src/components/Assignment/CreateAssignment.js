@@ -8,6 +8,8 @@ import { useAlert } from 'react-alert';
 import { clearErrors, createAssignment, getClass } from '../../redux/actions/classAction';
 import Loader from '../layout/Loader';
 import { loadUser } from '../../redux/actions/userAction';
+import ReactQuill from 'react-quill';
+import ClassHeader from '../Header/ClassHeader';
 
 const CreateAssignment = ({match}) => {
   const history = useHistory();
@@ -26,7 +28,7 @@ const CreateAssignment = ({match}) => {
 
   useEffect(() => {
     dispatch(getClass(match.params.id,user)).then(()=>{
-      if(isTeacher){
+      if(!isTeacher){
         history.push("/");
       }
     })
@@ -81,11 +83,15 @@ const CreateAssignment = ({match}) => {
       {loading | loading1 ? (
         <Loader />
       ) : (
-        <div className="main__announcements">
-          <div className="main__announcementsWrapper">
+        <div className="">
+          <ClassHeader current="Stream" classData = {classData} />
+          <div className="w-2/3 mx-auto">
             <div className="main__ancContent">
+            <div className="flex justify-between border-2 border-white border-b-indigo-500 mb-8">
+                <div className="text-xl font-semibold">Create Assignment</div>
+              </div>
               <div className="main__form">
-                <label for="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Title of Assignment</label>
+                <label for="first_name" className="block my-2 text-sm font-medium text-gray-900 dark:text-white">Title of Assignment</label>
                 <input
                   type="text"
                   className ="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -94,7 +100,7 @@ const CreateAssignment = ({match}) => {
                     setTitle(e.target.value);
                   }}
                 />
-                <label for="first_name" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Points</label>
+                <label for="first_name" className="block my-2 text-sm font-medium text-gray-900 dark:text-white">Points</label>
                 <input
                   type="number"
                   className ="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-2/3 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -103,13 +109,25 @@ const CreateAssignment = ({match}) => {
                     setPoints(e.target.valueAsNumber);
                   }}
                 />
-                <TextField
+                {/* <TextField
                   id="filled-multiline-flexible"
                   multiline
                   label="Announce Something to class"
                   variant="filled"
                   value={inputValue}
                   onChange={(e) => setInput(e.target.value)}
+                /> */}
+                <label className="block my-2 text-sm font-medium text-gray-900 dark:text-white">Description</label>
+                
+                <ReactQuill
+                  id=""
+                  className="mt-4 pb-8 w-full h-48"
+                  multiline
+                  label="Announce Something to class"
+                  variant="filled"
+                  theme="snow"
+                  value={inputValue}
+                  onChange={setInput}
                 />
                 <div className="main__buttons">
                   <input

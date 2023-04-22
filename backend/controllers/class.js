@@ -2,7 +2,7 @@ const sendToken = require("../utils/jwttoken");
 const {sendEmail} = require("../utils/utils");
 const crypto = require("crypto");
 const ErrorHander = require("../utils/errorhandler");
-const {User,Class,Submission , Assignment,Post, Grade} = require("../models");
+const {User,Class,Submission , Assignment,Post, Grade, ExamReport} = require("../models");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const mongoose = require("mongoose");
 
@@ -11,7 +11,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 exports.getClass = (async (req, res, next) => {
   try{
     const {classid} =  req.params;
-    const _class = await Class.findById(classid).populate("exams");
+    const _class = await Class.findById(classid).populate("ownerId").populate("exams").populate("assignments").populate("students");
     res.status(200).json({
       success: true,
       class : _class
@@ -243,7 +243,8 @@ exports.submitAssignment = catchAsyncErrors(async (req, res, next)=>{
     assignmentId:assignmentid,
     studentEmail: student.email,
     assignmentName:assignment.title,
-    totalMarks:assignment.points
+    totalMarks:assignment.points,
+    classId : assignment.classId
   });
 
   let submissionStatus;
@@ -504,3 +505,59 @@ exports.assignGrade = catchAsyncErrors(async(req,res,next)=>{
       return next(new ErrorHander(err.message + "  Error while updating grade",400));
     })
 })
+/*
+{
+  assignmentGrades : {
+    "Giri" : {
+      "6asfdafasdfasasdfasf" : "5/10",
+      "fasdfasfasfasdfasfas" : "9/10"
+    },
+    'Ramesh': {
+      "6asfdafasdfasasdfasf" : "9/10",
+      "fasdfasfasfasdfasfas" : "9/10"
+    }
+  }
+  examGrades : [
+    {
+      "name" : 'Giri',
+      "marks" : {
+        "6asfdafasdfasasdfasf" : "5/10",
+        "fasdfasfasfasdfasfas" : "9/10"
+      }
+    },
+    {
+      "name" : 'Ramesh',
+      "marks" : {
+        "6asfdafasdfasasdfasf" : "9/10",
+        "fasdfasfasfasdfasfas" : "9/10"
+      }
+    },
+  ]
+}
+*/
+exports.getAllGrades = catchAsyncErrors(async(req,res,next)=>{
+  const {classId} = req.params;
+  
+  const gradeData = await Grade.find({classId:classId}).populate("assignmentId").populate("studentId");
+  let assignmentGrades = {};
+
+  gradeData.forEach((grade)=>{
+    // console.log(grade);
+    if(!assignmentGrades[grade.studentId.name])assignmentGrades[grade.studentId.name]={};
+    assignmentGrades[grade.studentId.name][grade.assignmentId._id] = `${grade.marks}`
+  })
+
+  let examData = await ExamReport.find({classId:classId}).populate("userId").populate("examId");
+  let examGrades = {};
+
+  examData.forEach((grade)=>{
+    // console.log(grade);
+    if(!examGrades[grade.userId.name])examGrades[grade.userId.name]={};
+    examGrades[grade.userId.name][grade.examId._id] = `${grade.score}`
+  })
+
+  res.status(200).json({
+    assignmentGrades,examGrades
+  })
+})
+

@@ -1,4 +1,4 @@
-import { MenuItem, Select } from '@mui/material';
+import { Avatar, MenuItem, Select } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { useAlert } from 'react-alert';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,6 +6,7 @@ import { useHistory } from 'react-router-dom';
 import { clearErrors, getAssignment, getClass, getSubmissions, submitAssignment, unsubmitAssignment } from '../../redux/actions/classAction';
 import Loader from '../layout/Loader';
 import { StudentWorkHeader } from '../Header/AssignmentHeader';
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 
 
@@ -19,13 +20,23 @@ const SubmissionCard = ({item  , index, url})=>{
     <>
       {
         (item.submissionStatus!==undefined) ? (
-          <div className="w-48 h-48 border-2 bg-gray-600 cursor-pointer" onClick={()=>{openInNewTab(url)}} key={index}>
-            {item.studentName}
+          <div className="p-4 rounded-md border-2 bg-gray-200 cursor-pointer flex flex-col items-center " onClick={()=>{openInNewTab(url)}} key={index}>
+            <div className="flex flex-row text-xl items-center mb-4">
+              <Avatar />
+            <div className="ml-4">
+              {item.studentName}
+            </div>
+            </div>
             <span className='text-green-500'> Submitted </span>
           </div>
         ): (
-          <div className="w-48 h-48 border-2 bg-gray-600" key={index}>
-            {item.name}
+          <div className="p-4 rounded-md border-2 bg-gray-200 flex flex-col items-center " key={index}>
+            <div className="flex flex-row text-xl items-center mb-4">
+              <Avatar />
+            <div className="ml-4">
+              {item.name}
+            </div>
+            </div>
             <span className='text-red-500'> Assigned </span>
           </div>
         )
@@ -86,6 +97,13 @@ const Studentwork = ({match}) => {
       }
     }
   }, [dispatch, error, alert]);
+
+  const getLocalDate = (dt) =>{
+    const date = new Date(dt);
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
+    return date.toLocaleDateString('en-US', options);
+  }
+
   return (
     <>
       {loading | !assignment | !submitted | !notSubmitted ? (
@@ -93,7 +111,26 @@ const Studentwork = ({match}) => {
       ) : (
         <>
           <StudentWorkHeader assignment={assignment} classData={classData} />
-          <div className="">
+
+          <div className="mt-4">
+            <div className="amt__Cnt">
+              <div className="amt__top text-4xl text-blue-500">
+                <AssignmentIcon fontSize="large" className="" />
+                <div>{assignment.title}</div>
+              </div>
+              <div className="flex items-center text-gray-500">
+                <p className="amt__txt">{user.name}</p>
+                {"•"}
+                <p className="amt__txt">
+                  {getLocalDate(assignment.createdAt) }
+                  {/* {assignment.createdAt} */}
+                </p>
+              </div>
+              <div className="amt__txt py-2 border-2 border-white border-b-blue-500">
+                {assignment.points} {" points"}
+              </div>
+            </div>
+            <div className="px-4">
             <Select
               value={checkboxValue}
               onChange={(e) => {
@@ -104,16 +141,18 @@ const Studentwork = ({match}) => {
               <MenuItem value={"Submitted"}>Submitted</MenuItem>
               <MenuItem value={"Assignemd"}>Assigned</MenuItem>
             </Select>
-            {filtered.map((item, index) => (
+           <div className="flex flex-wrap justify-start gap-x-4 mt-4">
+           {filtered.map((item, index) => (
               <SubmissionCard
                 index={index}
                 item={item}
                 url={`${baseUrl}/${classData._id}/assignment/${assignment._id}/studentwork/${item._id}`}
               />
             ))}
+           </div>
+            </div>
           </div>
         </>
-        
       )}
     </>
   );

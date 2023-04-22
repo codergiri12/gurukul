@@ -75,7 +75,7 @@
   font-style: normal;
 }
 .main__announce {
-  display: flex;
+  /* display: flex; */
   /* justify-content: center; */
   flex-shrink: 0;
   margin-top: 1rem;
@@ -83,8 +83,8 @@
 .main__announcements {
   padding: 1rem;
   overflow: hidden;
-  margin: -2.4rem;
-  margin-left: 1rem;
+  /* margin: -2.4rem; */
+  /* margin-left: 1rem; */
   /* margin-top: 1.5rem; */
 }
 .main__subText {
@@ -93,10 +93,10 @@
   font-weight: 400;
 }
 .main__status {
-  border: 1.5px solid #dadce0;
+  /* border: 1.5px solid #dadce0; */
   padding: 20px;
   border-radius: 10px;
-  width: 10vw;
+  /* width: 12vw; */
   height: 15vh;
 }
 .main__announcementsWrapper {

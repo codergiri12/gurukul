@@ -8,8 +8,9 @@ import { Avatar, Button, TextField } from "@mui/material";
 import Announcement from "./Announcement";
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-
+import AddIcon from '@mui/icons-material/Add';
 import "../../styles/Class/Class.css";
+import ClassHeader from "../Header/ClassHeader";
 
 const Class = ({ match }) => {
   const history = useHistory();
@@ -20,7 +21,8 @@ const Class = ({ match }) => {
     error,
     loading,
     class: classData,
-    posts
+    posts,
+    isTeacher
   } = useSelector((state) => state.class);
   const { loading: loading1, user } = useSelector((state) => state.user);
 
@@ -83,10 +85,11 @@ const Class = ({ match }) => {
 
   return (
     <>
-      {((loading | loading1) | (classData===undefined)) ? (
+      {loading | loading1 | (classData === undefined) ? (
         <Loader />
       ) : (
         <>
+          <ClassHeader classData={classData} current={"Stream"} />
           <div className="main">
             <div className="main__wrapper">
               <div className="main__content">
@@ -109,10 +112,23 @@ const Class = ({ match }) => {
                 </div>
               </div>
               <div className="main__announce">
-                <div className="main__status">
-                  <p>Upcoming</p>
-                  <p className="main__subText">No work due</p>
-                </div>
+                {isTeacher && (
+                  <div className="h-16 flex flex-row">
+                    <button
+                      type="button"
+                      class="flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-lg px-4 py-2.5 text-center mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                      onClick={() => {
+                        history.push(
+                          `/class/${classData._id}/createAssignment`
+                        );
+                      }}
+                    >
+                      <AddIcon />
+                      Assignment
+                    </button>
+                  </div>
+                )}
+
                 <div className="main__announcements">
                   <div className="main__announcementsWrapper">
                     <div className="main__ancContent">
@@ -124,8 +140,8 @@ const Class = ({ match }) => {
                             multiline
                             label="Announce Something to class"
                             variant="filled"
-                            theme="snow" 
-                            value={inputValue}  
+                            theme="snow"
+                            value={inputValue}
                             onChange={setInput}
                           />
                           <div className="main__buttons ">
@@ -158,21 +174,18 @@ const Class = ({ match }) => {
                           onClick={() => setShowInput(true)}
                         >
                           <Avatar />
-                          <div className="cursor-pointer" >Announce Something to class</div>
+                          <div className="cursor-pointer">
+                            Announce Something to class
+                          </div>
                         </div>
                       )}
                     </div>
                   </div>
-                  <Announcement data = {classData} />
+                  <Announcement data={classData} />
                 </div>
               </div>
             </div>
           </div>
-
-
-
-
-       
         </>
       )}
     </>

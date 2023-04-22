@@ -122,7 +122,6 @@ const StudentExam = ({match}) => {
   }
 
   if(timeRemaining==0){
-    console.log("submit called...")
     handleSubmit();
   }
 
@@ -132,31 +131,72 @@ const StudentExam = ({match}) => {
         <Loader />
       ) : (
         <>
-          {
-            (examReport.remainingTime > 0 && timeRemaining>0)? 
-            (<div>
-              <h1>Timer</h1>
-              <p>{formatTime(timeRemaining)}</p>
-              <div className="bg-gray-100 py-4 px-8">
-                <h1 className="text-2xl font-bold mb-4">
-                  Question {currentQuestion + 1}
-                </h1>
-                <p className="mb-4">{questionsState[currentQuestion].name}</p>
-                <div className="flex flex-wrap">
-                  {questionsState[currentQuestion].options.map((option, index) => (
-                    <button
-                      key={index}
-                      className={`${(optionsSelected && optionsSelected[currentQuestion] && optionsSelected[currentQuestion]) === index ? "bg-blue-500 transition duration-200" : "bg-white"} hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow mr-4 mb-4`}
-                      onClick={()=>{
-                        setOptionsSelected({...optionsSelected , [currentQuestion]:index})
-                        socket.emit("set-option",{reportId :examReport._id ,question : currentQuestion , option : index+1 });
-                      }}
-                    >
-                      {option}
-                    </button>
-                  ))}
+          {examReport.remainingTime > 0 && timeRemaining > 0 ? (
+            <div className="">
+              <div className="flex justify-between p-4 items-center">
+                <div className="flex ">
+                  <img
+                    className="w-20 ml-4"
+                    src={process.env.PUBLIC_URL + '/assets/img/logo.jpg'}
+                    alt="Logo"
+                  />
+                  <span className=" flex cursor-pointer items-center gap-1 rounded-md px-2 py-1 mt-2 capitalize decoration-indigo-500 decoration-2 underline-offset-1 transition   duration-300 ease-in-out">
+                    <span className="text-amber-900	 text-3xl">Gurukul</span>
+                  </span>
                 </div>
-                <div className="mt-4">
+                <div className="font-bold text-xl underline">
+                  {selectedExam.name} {"  Exam"}
+                </div>
+                <div className="flex items-center text-lg">
+                  <span> {"Time left: "} {formatTime(timeRemaining)} </span>
+                  <button
+                    className="ml-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleSubmit}
+                  >
+                    Submit
+                  </button>
+                </div>
+              </div>
+              <div className="w-4/5 mx-auto mt-8">
+                {/* <div className=""> */}
+                  <div className="flex justify-between border-2 border-white border-b-indigo-500">
+                    <div className="text-xl font-semibold">Question No {currentQuestion+1}</div>
+                    <div className="">Single Type Question</div>
+                  </div>
+                {/* </div> */}
+                <div className="mt-8">
+                  <div className="">
+                    {questionsState[currentQuestion].name}
+                  </div>
+                  <div className="flex flex-col mt-4">
+                    {questionsState[currentQuestion].options.map(
+                      (option, index) => (
+                        <button
+                          key={index}
+                          className={`${
+                            (optionsSelected &&
+                              optionsSelected[currentQuestion] &&
+                              optionsSelected[currentQuestion]) === index
+                              ? "bg-blue-500 transition duration-200"
+                              : "bg-white"
+                          } hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow mr-4 mb-4`}
+                          onClick={() => {
+                            const newOptions = {...optionsSelected , [currentQuestion]:index};
+                            setOptionsSelected(newOptions);
+                            socket.emit("set-option", {
+                              reportId: examReport._id,
+                              question: currentQuestion,
+                              option: index + 1,
+                            });
+                          }}
+                        >
+                          {option}
+                        </button>
+                      )
+                    )}
+                  </div>
+                </div>
+                <div className="flex justify-between">
                   <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-4"
                     onClick={handlePrev}
@@ -171,18 +211,12 @@ const StudentExam = ({match}) => {
                   >
                     Next
                   </button>
-                  <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                    onClick={handleSubmit}
-                  >
-                    Submit
-                  </button>
                 </div>
               </div>
-            </div>):(
-              <ShowScore exam={selectedExam} score={score} />
-            )
-          }
+            </div>
+          ) : (
+            <ShowScore exam={selectedExam} score={score} />
+          )}
         </>
       )}
     </>

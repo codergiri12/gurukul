@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const gradeSchema = new Schema({
   studentId:{type:Schema.Types.ObjectId,ref:"User"},
   assignmentId:{type:Schema.Types.ObjectId,ref:"Assignment"},
+  classId:{type:Schema.Types.ObjectId,ref:"Class"},
   studentEmail:{type:String,required:true},
   assignmentName:{type:String,required:true},
   marks:{type:Number,default:0},

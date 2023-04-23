@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Login, Home , ClassHeader, Class , CreateAssignment, Assignment, Post, Studentwork, StudentWorkDetails,NotFound, Exams, Exam, StudentExam, Ide, People, Grades } from "./components";
+import { Login, Home , ClassHeader, Class , CreateAssignment, Assignment, Post, Studentwork, StudentWorkDetails,NotFound, Exams, Exam, StudentExam, Ide, People, Grades, CodingQuestion, CodingQuestions } from "./components";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import {ProtectedRoute}  from "./routes/Routes";
 import store from "./redux/store/store"
 import { loadUser } from "./redux/actions/userAction";
+import "./App.css"
 function App() {
 
   useEffect(() => {
@@ -16,6 +17,8 @@ function App() {
       <Switch>  
       <Route exact path="/login" component={Login}  />
       <Route exact path="/ide" component={Ide}  />
+      <Route exact path="/coding" component={CodingQuestions}  />
+      <Route exact path="/coding/:id" component={CodingQuestion}  />
       <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork" component={Studentwork} />
         <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId/studentwork/:submissionId" component={StudentWorkDetails} />
         <ProtectedRoute exact path="/class/:classId/assignment/:assignmentId" component={Assignment} />

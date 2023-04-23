@@ -71,10 +71,10 @@ const HomeHeader = ({user}) => {
               <ul className="hidden md:flex">
                 {/* {menuItems.map(({ name, route }) => ( */}
                 <li  className="float-left">
-                    <a href="/ide"
+                    <a href="/coding"
                         className="flex cursor-pointer items-center gap-3 rounded-md px-4 py-1 mt-2 capitalize decoration-indigo-500 decoration-2 underline-offset-1 transition   duration-300 ease-in-out"
                     >
-                        <span className="text-gray-800 text-2xl">IDE</span>
+                        <span className="text-gray-800 text-2xl">Coding</span>
                     </a>
                 </li>
                 <li className="float-left">
@@ -119,9 +119,9 @@ const HomeHeader = ({user}) => {
 
         <div className="flex flex-col md:hidden border-b pl-3 ">
     {/* {menuItems.map(({ name, route }) => ( */}
-        <a href="/ide" className="flex justify-center cursor-pointer items-center gap-1 rounded-sm px-2 py-1 mt-2 capitalize decoration-indigo-500 decoration-2 underline-offset-1 transition     duration-300 ease-in-out"
+        <a href="/coding" className="flex justify-center cursor-pointer items-center gap-1 rounded-sm px-2 py-1 mt-2 capitalize decoration-indigo-500 decoration-2 underline-offset-1 transition     duration-300 ease-in-out"
         >
-            <span className="text-gray-500">IDE</span>
+            <span className="text-gray-500">Coding</span>
         </a>
         <a className="flex justify-center cursor-pointer items-center gap-1 rounded-sm px-2 py-1 mt-2 capitalize decoration-indigo-500 decoration-2 underline-offset-1 transition     duration-300 ease-in-out">
           <span className="text-gray-500">Create</span>

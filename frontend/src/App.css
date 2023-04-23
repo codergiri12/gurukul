@@ -27,6 +27,13 @@
 .App-link {
   color: #61dafb;
 }
+.MJXc-display{
+  display: inline !important;
+  margin : 0px !important
+}
+.coding-question {
+  font-family: verdana, sans-serif;
+}
 
 @keyframes App-logo-spin {
   from {

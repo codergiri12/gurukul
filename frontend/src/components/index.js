@@ -14,8 +14,10 @@ import StudentExam from "./Exams/StudentExam";
 import Ide from "./Ide/Ide";
 import People from "./Class/People";
 import Grades from "./Class/Grades";
+import CodingQuestion from "./Ide/CodingQuestion";
+import CodingQuestions from "./Ide/CodingQuestions";
 
-export { NotFound ,  Class, Home, ClassHeader, Login , CreateAssignment, Post , Assignment , Studentwork , StudentWorkDetails, Ide, Exams , Exam , StudentExam , People, Grades };
+export { NotFound ,  Class, Home, ClassHeader, Login , CreateAssignment, Post , Assignment , Studentwork , StudentWorkDetails, Ide, Exams , Exam , StudentExam , People, Grades , CodingQuestion , CodingQuestions };
 
 
 

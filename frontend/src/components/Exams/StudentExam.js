@@ -27,7 +27,7 @@ const StudentExam = ({match}) => {
     questions: questionsState
   } = useSelector((state) => state.exam);
 
-  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [timeRemaining, setTimeRemaining] = useState(-1);
   const [optionsSelected , setOptionsSelected] = useState({});
   const [score, setScore] = useState(0)
 
@@ -40,21 +40,24 @@ const StudentExam = ({match}) => {
   
 
   const intervalRef = React.useRef();
-
+  let timer;
   const startTimer = (timerParameter) => {
-    let timer = timerParameter;
+    timer = timerParameter;
     intervalRef.current = setInterval(() => {
+      if (timer <= 0) {
+        clearInterval(intervalRef.current);
+      }
       timer--;
-      setTimeRemaining(timer);
       socket.emit("set-remaining-time", {
         reportId : examReport._id ,
         timeRemaining: timer,
       }) ;
-
-      if (timer <= 0) {
-        clearInterval(intervalRef.current);
-      }
+      setTimeRemaining(timer);
     }, 1000);
+
+    return () => {
+      clearInterval(intervalRef.current);
+    };
   };
 
 
@@ -79,6 +82,8 @@ const StudentExam = ({match}) => {
     });
     socket.on("submit-exam-success", (data) => {
       console.log("exam Submitted, ", data);
+      timer=-1;
+      clearInterval(intervalRef.current);
       setTimeRemaining(-1);
       setScore(data.score);
     });
@@ -131,7 +136,7 @@ const StudentExam = ({match}) => {
         <Loader />
       ) : (
         <>
-          {examReport.remainingTime > 0 && timeRemaining > 0 ? (
+          {(examReport.remainingTime > 0 && timeRemaining > 0) ? (
             <div className="">
               <div className="flex justify-between p-4 items-center">
                 <div className="flex ">
